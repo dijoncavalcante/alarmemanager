@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">AlarmeManager</string>
+    <string name="exemploAlarmeManager">Exemplo Alarme Manager!</string>
+    <string name="alarme_cancelado">Alarme Cancelado</string>
+    <string name="campo_minuto_obrigatorio">Campo de Minutos obrigatório</string>
+    <string name="campo_segundo_obrigatorio">Campo de Segundos obrigatório</string>
+    <string name="botao_start">Agendar</string>
+    <string name="botao_cancelar">Cancelar</string>
+    <string name="exemplo_1">Exemplo: 1</string>
+    <string name="exemplo_47">Exemplo: 47</string>
+    <string name="teste_de_broadcast">Teste de Broadcast</string>
+    <string name="hora_de_ir_para_casa">Chegou a hora de ir para casa!</string>
 </resources>

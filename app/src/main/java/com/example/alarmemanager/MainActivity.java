@@ -34,9 +34,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         init();
-//        Intent alarmIntent = new Intent(this, AlarmeReceiver.class);
-//        pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, 0);
-
+        // primeiro cria a intenção
+        Intent alarmIntent = new Intent(this, AlarmeReceiver.class);
+        //cria a intenção pendente
+        pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, 0);
+        /*
+            Métodos dos Clicks dos botões
+         */
         buttonStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -54,22 +58,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void startAlarm() {
-        //alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, 0, 5000, pendingIntent);
-        //alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,5000,pendingIntent);
-//        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, 5000 * 60 * 5, pendingIntent);
-//
-
-        // primeiro cria a intenção
-
-        Intent it = new Intent(this, AlarmeReceiver.class);
-
-        PendingIntent p = PendingIntent.getBroadcast(this, 0, it, 0);
-
-
-        // precisamos pegar agora + 10segundos
-
         Calendar c = Calendar.getInstance();
-
         c.setTimeInMillis(System.currentTimeMillis());
         String txtNotificacao = "Start do Alarme  às: "
                 + Calendar.getInstance().get(Calendar.HOUR) + ":"
@@ -77,15 +66,14 @@ public class MainActivity extends AppCompatActivity {
                 + Calendar.getInstance().get(Calendar.SECOND);
         Log.d(TAG, txtNotificacao);
         Toast.makeText(getApplicationContext(), "Alarm Start = " + txtNotificacao, Toast.LENGTH_LONG).show();
-        int minutos = Integer.valueOf(etMinutos.getText().toString());
-        int segundos = Integer.valueOf(etSegundos.getText().toString());
-        c.add(Calendar.MINUTE, minutos);
-        c.add(Calendar.SECOND, segundos);
-        // agendar o alarme
-        AlarmManager alarme = (AlarmManager) getSystemService(ALARM_SERVICE);
-        long time = c.getTimeInMillis();
-//        alarme.set(AlarmManager.RTC_WAKEUP, time, p);
-        alarme.setExactAndAllowWhileIdle (AlarmManager.RTC_WAKEUP, time, p);
+        int minutos = Integer.valueOf(etMinutos.getText().toString()); //recupera os minutos informados pelo usuário
+        int segundos = Integer.valueOf(etSegundos.getText().toString());//recupera os segundos informados pelo usuário
+        c.add(Calendar.MINUTE, minutos);//add minutos a mais
+        c.add(Calendar.SECOND, segundos);//add segundosa mais
+        long time = c.getTimeInMillis();//usa uma variável do tipo long para receber os milisegundos
+        // agenda o alarme
+        alarmManager.setExactAndAllowWhileIdle (AlarmManager.RTC_WAKEUP, time, pendingIntent);
+        //mostra o start do alarme e para que horas/minuto/segundo esta agendado o alarme
         tvText.setText(txtNotificacao + ". Agendado para: "
                                                + c.get(Calendar.HOUR)
                                                +":"+c.get(Calendar.MINUTE)
@@ -94,7 +82,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void cancelAlarm(){
         alarmManager.cancel(pendingIntent);
-        Toast.makeText(getApplicationContext(), "Alarm Cancelled", Toast.LENGTH_LONG).show();
+        tvText.setText(R.string.exemploAlarmeManager);
+        Toast.makeText(getApplicationContext(), getString(R.string.alarme_cancelado) , Toast.LENGTH_LONG).show();
     }
 
     public void init(){
@@ -107,16 +96,24 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public boolean validarCampos(){
+        boolean error = true;
         if (TextUtils.isEmpty(etMinutos.getText())){
-            etMinutos.setError("Campo etMinutos obrigatório");
+            etMinutos.setError(getString(R.string.campo_minuto_obrigatorio));
             etMinutos.setFocusable(true);
-            return false;
+            error = false;
         }
         if (TextUtils.isEmpty(etSegundos.getText())){
-            etSegundos.setError("Campo etSegundos obrigatório");
+            etSegundos.setError(getString(R.string.campo_segundo_obrigatorio));
             etSegundos.setFocusable(true);
-            return false;
+            error = false;
         }
-        return true;
+        if (error){
+            etMinutos.setFocusable(false);
+            etSegundos.setFocusable(false);
+            return error;
+        }else   {
+            return error;
+        }
+
     }
 }
