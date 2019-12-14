@@ -32,7 +32,8 @@ public class AlarmeReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         // TODO: This method is called when the BroadcastReceiver is receiving
         // an Intent broadcast.
-        throw new UnsupportedOperationException("Not yet implemented");
+        createNotificationChannel(context);
+        sendNotification(context);
     }
 
     private NotificationCompat.Builder getNotificationBuilder(Context context) {
@@ -74,6 +75,7 @@ public class AlarmeReceiver extends BroadcastReceiver {
         // Deliver the notification.
         mNotifyManager.notify(NOTIFICATION_ID, notifyBuilder.build());
     }
+
     public void createNotificationChannel(Context context) {
         Log.d(TAG, "createNotificationChannel");
         // Create a notification manager object.
