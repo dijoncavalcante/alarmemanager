@@ -7,9 +7,11 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,6 +22,8 @@ public class MainActivity extends AppCompatActivity {
     Button buttonStart;
     Button buttonCancel;
     TextView tvText;
+    EditText etMinutos;
+    EditText etSegundos;
     private static final String TAG = "MainActivity";
     AlarmManager alarmManager;
     PendingIntent pendingIntent;
@@ -36,7 +40,8 @@ public class MainActivity extends AppCompatActivity {
         buttonStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startAlarm();
+                if (validarCampos())
+                    startAlarm();
             }
         });
 
@@ -72,8 +77,10 @@ public class MainActivity extends AppCompatActivity {
                 + Calendar.getInstance().get(Calendar.SECOND);
         Log.d(TAG, txtNotificacao);
         Toast.makeText(getApplicationContext(), "Alarm Start = " + txtNotificacao, Toast.LENGTH_LONG).show();
-        c.add(Calendar.MINUTE, 5);
-        c.add(Calendar.SECOND, 1); // +10 segundos
+        int minutos = Integer.valueOf(etMinutos.getText().toString());
+        int segundos = Integer.valueOf(etSegundos.getText().toString());
+        c.add(Calendar.MINUTE, minutos);
+        c.add(Calendar.SECOND, segundos);
         // agendar o alarme
         AlarmManager alarme = (AlarmManager) getSystemService(ALARM_SERVICE);
         long time = c.getTimeInMillis();
@@ -94,6 +101,22 @@ public class MainActivity extends AppCompatActivity {
         buttonStart = findViewById(R.id.buttonStart);
         buttonCancel = findViewById(R.id.buttonCancel);
         tvText = findViewById(R.id.tvText);
+        etMinutos = findViewById(R.id.etMinutos);
+        etSegundos = findViewById(R.id.etSegundos);
         alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+    }
+
+    public boolean validarCampos(){
+        if (TextUtils.isEmpty(etMinutos.getText())){
+            etMinutos.setError("Campo etMinutos obrigatório");
+            etMinutos.setFocusable(true);
+            return false;
+        }
+        if (TextUtils.isEmpty(etSegundos.getText())){
+            etSegundos.setError("Campo etSegundos obrigatório");
+            etSegundos.setFocusable(true);
+            return false;
+        }
+        return true;
     }
 }
